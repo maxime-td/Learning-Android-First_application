@@ -8,8 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import android.widget.Button    // Pour utiliser Button
-import android.widget.EditText
-import android.widget.Toast     // Pour utiliser Toast.makeText
+
 
 
 class MainActivity : AppCompatActivity() {
