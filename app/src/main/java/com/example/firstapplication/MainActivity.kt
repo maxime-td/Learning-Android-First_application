@@ -1,5 +1,6 @@
 package com.example.firstapplication
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
@@ -27,19 +28,14 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "onCreate called") // Log
 
 
-
-        // Texte entré par l'utilisateur
-        var champTexte = findViewById<EditText>(R.id.champTexte)
-
         // On récupère le bouton depuis le layout en utilisant son ID
         val bouton = findViewById<Button>(R.id.monBouton)
 
+
         // On définit ce qui se passe quand on clique sur le bouton
         bouton.setOnClickListener {
-            // Toast.makeText crée un petit message qui apparaît en bas de l'écran
-            // Toast.LENGTH_SHORT : durée d'affichage courte
-            val texte = champTexte.text.toString() // On lit le texte
-            Toast.makeText(this, texte, Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, SubActivity::class.java)
+            startActivity(intent)
         }
 
 
