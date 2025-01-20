@@ -1,14 +1,23 @@
 package com.example.firstapplication
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import android.widget.Button    // Pour utiliser Button
-
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import kotlinx.coroutines.launch
+import androidx.compose.ui.Modifier
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 
 
 class MainActivity : AppCompatActivity() {
@@ -19,31 +28,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState) // Création de l'activité
 
-        enableEdgeToEdge()  // Pour que l'application puisse utiliser tout l'écran,
-                            // même derrière la barre d'activité
-
-        setContentView(R.layout.activity_main)
-
-        Log.d(TAG, "onCreate called") // Log
-
-
-        // On récupère le bouton depuis le layout en utilisant son ID
-        val bouton = findViewById<Button>(R.id.monBouton)
-
-
-        // On définit ce qui se passe quand on clique sur le bouton
-        bouton.setOnClickListener {
-            val intent = Intent(this, SubActivity::class.java)
-            startActivity(intent)
+        setContent {
+            MainScreen()
         }
 
-
-        // Le code pour la gestion Edge-to-Edge
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
     }
 
     override fun onStart() {
@@ -71,4 +59,38 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "onDestroy called")
     }
 
+}
+
+
+// Fonctions compose
+@Composable
+fun MainScreen() {
+    // Pour contrôler l'état de la Snackbar
+    val snackbarHostState = remember { SnackbarHostState() }
+    // Pour le scope des coroutines (nécessaire pour afficher la Snackbar)
+    val coroutineScope = rememberCoroutineScope()
+    // Pour le texte du TextField
+    var text by rememberSaveable { mutableStateOf("") }
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier.padding(paddingValues)
+        ) {
+            TextField(
+                value = text,
+                onValueChange = { text = it }
+            )
+            Button(
+                onClick = {
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar(text)
+                    }
+                }
+            ) {
+                Text("Afficher Snackbar")
+            }
+        }
+    }
 }
